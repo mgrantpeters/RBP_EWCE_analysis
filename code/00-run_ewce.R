@@ -10,80 +10,6 @@ n = 10000
 
 data = read.csv("../data/RBPs_subgroups.csv")
 
-#################------------------- Splicing regulation
-#Load target gene list
-
-list = data[data$Splicing.regulation>0,1]
-
-full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
-                                                sctSpecies = "human",
-                                                genelistSpecies = "human",
-                                                hits = list, 
-                                                reps = n,                       #Bootstrap repeats set to 10000
-                                                annotLevel = 1,                 #Annotation level where 1= major cell types, 2= higher resolution
-                                                geneSizeControl = TRUE)         #Control for GC content and gene length
-
-thisResult1 = data.frame(full_results$results)
-thisResult1$MajorCellType = unlist(lapply(strsplit(as.character(thisResult1$CellType),'_'), `[[`, 1))
-thisResult1$testList = 'Splicing regulation'
-FinalResult1 = thisResult1
-
-plot_list = EWCE::ewce_plot(total_res = full_results$results,                     #Write plot data with BH correction p vals
-                            mtc_method = "BH",
-                            ctd = ctd)
-
-plot_list$withDendro+ theme(text = element_text(size = 12))+theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))   
-
-ggsave(
-  filename="../plots/EWCE_RBPs_splicing-regulation_annot1.png",
-  plot = last_plot(),
-  device ="png",
-  scale = 1,
-  width = 7,
-  height = 7,
-  units = c("in"),
-  dpi = 300
-)
-
-write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_splicing-regulation_annot1.csv", row.names=TRUE, quote=FALSE) 
-
-rm(full_results)
-rm(plot_list)
-
-full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
-                                                sctSpecies = "human",
-                                                genelistSpecies = "human",
-                                                hits = list, 
-                                                reps = n,                       #Bootstrap repeats set to 10000
-                                                annotLevel = 2,                 #Annotation level where 1= major cell types, 2= higher resolution
-                                                geneSizeControl = TRUE)         #Control for GC content and gene length
-thisResult = data.frame(full_results$results)
-thisResult$MajorCellType = unlist(lapply(strsplit(as.character(thisResult$CellType),'_'), `[[`, 1))
-thisResult$testList = 'Splicing regulation'
-FinalResult = thisResult
-
-plot_list = EWCE::ewce_plot(total_res = full_results$results,                     #Write plot data with BH correction p vals
-                            mtc_method = "BH",
-                            ctd = ctd)
-
-plot_list$withDendro+ theme(text = element_text(size = 12))+theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))   
-
-ggsave(
-  filename="../plots/EWCE_RBPs_splicing-regulation_annot2.png",
-  plot = last_plot(),
-  device ="png",
-  scale = 1,
-  width = 20,
-  height = 7,
-  units = c("in"),
-  dpi = 300
-)
-
-write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_splicing-regulation_annot2.csv", row.names=TRUE, quote=FALSE) 
-rm(full_results)
-rm(plot_list)
-############--------------------------------
-
 list = data[data$Spliceosome>0,1]
 
 full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
@@ -96,11 +22,11 @@ full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
 thisResult1 = data.frame(full_results$results)
 thisResult1$MajorCellType = unlist(lapply(strsplit(as.character(thisResult1$CellType),'_'), `[[`, 1))
 thisResult1$testList = 'Spliceosome'
-FinalResult1 = rbind(FinalResult1,thisResult1)
+FinalResult1 = thisResult1
 
 
 plot_list = EWCE::ewce_plot(total_res = full_results$results,                     #Write plot data with BH correction p vals
-                            mtc_method = "BH",
+                            mtc_method = "FDR",
                             ctd = ctd)
 
 plot_list$withDendro+ theme(text = element_text(size = 12))+theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))   
@@ -132,10 +58,10 @@ full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
 thisResult = data.frame(full_results$results)
 thisResult$MajorCellType = unlist(lapply(strsplit(as.character(thisResult$CellType),'_'), `[[`, 1))
 thisResult$testList = 'Spliceosome'
-FinalResult = rbind(FinalResult,thisResult)
+FinalResult = thisResult
 
 plot_list = EWCE::ewce_plot(total_res = full_results$results,                     #Write plot data with BH correction p vals
-                            mtc_method = "BH",
+                            mtc_method = "FDR",
                             ctd = ctd)
 
 plot_list$withDendro+ theme(text = element_text(size = 12))+theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))   
@@ -154,86 +80,11 @@ ggsave(
 write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_spliceosome_annot2.csv", row.names=TRUE, quote=FALSE) 
 rm(full_results)
 rm(plot_list)
-############--------------------------------
 
-list = data[data$Exon.Junction.Complex>0,1]
+#################------------------- Splicing regulation
+#Load target gene list
 
-full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
-                                                sctSpecies = "human",
-                                                genelistSpecies = "human",
-                                                hits = list, 
-                                                reps = n,                       #Bootstrap repeats set to 10000
-                                                annotLevel = 1,                 #Annotation level where 1= major cell types, 2= higher resolution
-                                                geneSizeControl = TRUE)         #Control for GC content and gene length
-
-thisResult1 = data.frame(full_results$results)
-thisResult1$MajorCellType = unlist(lapply(strsplit(as.character(thisResult1$CellType),'_'), `[[`, 1))
-thisResult1$testList = 'Exon junction complex'
-FinalResult1 = rbind(FinalResult1,thisResult1)
-
-plot_list = EWCE::ewce_plot(total_res = full_results$results,                     #Write plot data with BH correction p vals
-                            mtc_method = "BH",
-                            ctd = ctd)
-
-plot_list$withDendro+ theme(text = element_text(size = 12))+theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))   
-
-ggsave(
-  filename="../plots/EWCE_RBPs_exon-junction-complex_annot1.png",
-  plot = last_plot(),
-  device ="png",
-  scale = 1,
-  width = 7,
-  height = 7,
-  units = c("in"),
-  dpi = 300
-)
-
-write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_exon-junction-complex_annot1.csv", row.names=TRUE, quote=FALSE) 
-
-rm(full_results)
-rm(plot_list)
-
-full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
-                                                sctSpecies = "human",
-                                                genelistSpecies = "human",
-                                                hits = list, 
-                                                reps = n,                       #Bootstrap repeats set to 10000
-                                                annotLevel = 2,                 #Annotation level where 1= major cell types, 2= higher resolution
-                                                geneSizeControl = TRUE)         #Control for GC content and gene length
-
-thisResult = data.frame(full_results$results)
-thisResult$MajorCellType = unlist(lapply(strsplit(as.character(thisResult$CellType),'_'), `[[`, 1))
-thisResult$testList = 'Exon junction complex'
-FinalResult = rbind(FinalResult,thisResult)
-
-plot_list = EWCE::ewce_plot(total_res = full_results$results,                     #Write plot data with BH correction p vals
-                            mtc_method = "BH",
-                            ctd = ctd)
-
-plot_list$withDendro+ theme(text = element_text(size = 12))+theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))   
-
-ggsave(
-  filename="../plots/EWCE_RBPs_exon-junction-complex_annot2.png",
-  plot = last_plot(),
-  device ="png",
-  scale = 1,
-  width = 20,
-  height = 7,
-  units = c("in"),
-  dpi = 300
-)
-
-write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_exon-junction-complex_annot2.csv", row.names=TRUE, quote=FALSE) 
-rm(full_results)
-rm(plot_list)
-
-
-write.csv((.packages()), "../processed-data/loaded_R_packages.R")
-
-
-############--------------------------------
-
-list = data[data$NMD>0,1]
+list = data[data$Splicing.regulation>0,1]
 
 full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
                                                 sctSpecies = "human",
@@ -245,17 +96,17 @@ full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
 
 thisResult1 = data.frame(full_results$results)
 thisResult1$MajorCellType = unlist(lapply(strsplit(as.character(thisResult1$CellType),'_'), `[[`, 1))
-thisResult1$testList = 'NMD'
+thisResult1$testList = 'Splicing regulation'
 FinalResult1 = rbind(FinalResult1,thisResult1)
 
 plot_list = EWCE::ewce_plot(total_res = full_results$results,                     #Write plot data with BH correction p vals
-                            mtc_method = "BH",
+                            mtc_method = "FDR",
                             ctd = ctd)
 
 plot_list$withDendro+ theme(text = element_text(size = 12))+theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))   
 
 ggsave(
-  filename="../plots/EWCE_RBPs_NMD_annot1.png",
+  filename="../plots/EWCE_RBPs_splicing-regulation_annot1.png",
   plot = last_plot(),
   device ="png",
   scale = 1,
@@ -265,7 +116,7 @@ ggsave(
   dpi = 300
 )
 
-write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_NMD_annot1.csv", row.names=TRUE, quote=FALSE) 
+write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_splicing-regulation_annot1.csv", row.names=TRUE, quote=FALSE) 
 
 rm(full_results)
 rm(plot_list)
@@ -277,20 +128,19 @@ full_results <- EWCE::bootstrap_enrichment_test(sct_data = ctd,
                                                 reps = n,                       #Bootstrap repeats set to 10000
                                                 annotLevel = 2,                 #Annotation level where 1= major cell types, 2= higher resolution
                                                 geneSizeControl = TRUE)         #Control for GC content and gene length
-
 thisResult = data.frame(full_results$results)
 thisResult$MajorCellType = unlist(lapply(strsplit(as.character(thisResult$CellType),'_'), `[[`, 1))
-thisResult$testList = 'NMD'
+thisResult$testList = 'Splicing regulation'
 FinalResult = rbind(FinalResult,thisResult)
 
 plot_list = EWCE::ewce_plot(total_res = full_results$results,                     #Write plot data with BH correction p vals
-                            mtc_method = "BH",
+                            mtc_method = "FDR",
                             ctd = ctd)
 
 plot_list$withDendro+ theme(text = element_text(size = 12))+theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))   
 
 ggsave(
-  filename="../plots/EWCE_RBPs_NMD_annot2.png",
+  filename="../plots/EWCE_RBPs_splicing-regulation_annot2.png",
   plot = last_plot(),
   device ="png",
   scale = 1,
@@ -300,7 +150,7 @@ ggsave(
   dpi = 300
 )
 
-write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_NMD_annot2.csv", row.names=TRUE, quote=FALSE) 
+write.csv(data.frame(full_results$results), "../processed-data/EWCE_RBPs_splicing-regulation_annot2.csv", row.names=TRUE, quote=FALSE) 
 rm(full_results)
 rm(plot_list)
 
@@ -310,13 +160,19 @@ write.csv((.packages()), "../processed-data/loaded_R_packages.R")
 
 
 write.csv(FinalResult1, "../processed-data/final_results_table_annot1.csv")
-sig1 = FinalResult1[FinalResult1$p<0.05,]
-ggplot(FinalResult1) +
-  geom_point(aes(x = fold_change, y = CellType, color = MajorCellType, size = 5))+
-  geom_point(data = sig1, aes(x = fold_change, y = CellType, size = 4))+facet_grid(rows = vars(testList))+
+sig1 = FinalResult1[FinalResult1$q>0.05,]
+
+   
+FinalResult1 %>% 
+  mutate(CellType = factor(CellType,c("Astrocyte", "Microglia","OPC", "Oligodendrocyte","Vascular_cells","GABAergic_LAMP5","GABAergic_PAX6","GABAergic_PVALB","GABAergic_SST","GABAergic_VIP","Glutamatergic_IT","Glutamatergic_L4_IT","Glutamatergic_L5_ET","Glutamatergic_L5_6_IT_Car3","Glutamatergic_L5_6_NP", "Glutamatergic_L6_CT","Glutamatergic_L6b"))) %>%        
+  ggplot() +
+  geom_point(aes(x = -log10(q), y = CellType,color = MajorCellType, size = fold_change, alpha = q<0.05))+
+  scale_alpha_discrete(range=c(0.4,1))+
+  facet_grid(rows = vars(testList))+
   theme(text = element_text(size = 12))+ theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))+
-  xlab("Cell type") +
-  ylab("Fold Change") +
+  geom_vline(xintercept=1.3010, linetype="dashed", color = "darkgray") +
+  xlab("-log10(q)") +
+  ylab("Cell type") +
   coord_flip() + # this is to make  the graph landscape
   theme_light() +
   viridis::scale_fill_viridis() + ## to make the colour scheme color-blind safe, the parameter option="A" or option="B",etc will change palette
@@ -334,12 +190,12 @@ ggplot(FinalResult1) +
         ## This is to plot the two legends in two rows
         legend.box="vertical") 
 ggsave(
-  filename="../plots/Overview_results_annot1.png",
+  filename="../plots/Overview_results_annot1_test.png",
   plot = last_plot(),
   device ="png",
   scale = 1,
-  width = 12,
-  height = 10,
+  width = 8,
+  height = 7,
   units = c("in"),
   dpi = 300
 )
@@ -349,11 +205,13 @@ sig = FinalResult[FinalResult$p<0.05,]
 write.csv(FinalResult, "../processed-data/final_results_table_annot2.csv")
 
 ggplot(FinalResult) +
-  geom_point(aes(x = fold_change, y = CellType, color = MajorCellType, size = 5))+
-  geom_point(data = sig, aes(x = fold_change, y = CellType, size = 4))+facet_grid(rows = vars(testList))+
+  geom_point(aes(x = -log10(q), y = CellType, color = MajorCellType, size = fold_change, alpha = q<0.05))+
+  scale_alpha_discrete(range=c(0.4,1))+
+  facet_grid(rows = vars(testList))+
   theme(text = element_text(size = 12))+ theme(plot.margin=grid::unit(c(0.5,0.5,0.5,0.5), "in"))+
-  xlab("Cell type") +
-  ylab("Fold Change") +
+  geom_vline(xintercept=1.3010, linetype="dashed", color = "darkgray") +
+  xlab("-log10(q)") +
+  ylab("Cell type") +
   coord_flip() + # this is to make  the graph landscape
   theme_light() +
   viridis::scale_fill_viridis() + ## to make the colour scheme color-blind safe, the parameter option="A" or option="B",etc will change palette
